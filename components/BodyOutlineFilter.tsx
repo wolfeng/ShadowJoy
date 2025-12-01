@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { Activity, Sparkles, Flame } from 'lucide-react';
+import { Activity, Sparkles, Flame, Loader2 } from 'lucide-react';
 
 // --- 类型定义 ---
 interface Results {
@@ -247,7 +247,7 @@ const BodyOutlineFilter: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const [status, setStatus] = useState<string>("初始化中...");
+  const [status, setStatus] = useState<string>("正在载入资源...");
   
   // 默认设置为 particles (雨滴)
   const [activeEffect, setActiveEffect] = useState<EffectType>('particles');
@@ -792,8 +792,15 @@ const BodyOutlineFilter: React.FC = () => {
   return (
     <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
       {status && (
-        <div className="absolute top-10 z-50 bg-black/60 text-white px-6 py-2 rounded-full backdrop-blur-md border border-white/10 shadow-lg animate-pulse">
-          {status}
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 text-white transition-opacity duration-500">
+          {(!status.includes("错误") && !status.includes("Error") && !status.includes("Denied")) ? (
+            <Loader2 className="w-12 h-12 mb-4 animate-spin text-cyan-400" />
+          ) : (
+            <div className="text-red-500 text-4xl mb-4">⚠️</div>
+          )}
+          <div className={`text-lg font-medium tracking-wide ${status.includes("错误") ? "text-red-400" : "text-cyan-100/80 animate-pulse"}`}>
+            {status}
+          </div>
         </div>
       )}
 
