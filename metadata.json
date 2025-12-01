@@ -1,0 +1,8 @@
+{
+  "name": "影乐 (ShadowJoy)",
+  "description": "A real-time creative camera app that captures human bodies and visualizes them with a glowing smooth white outline using computer vision.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
