@@ -266,6 +266,7 @@ const BodyOutlineFilter: React.FC = () => {
   
   const paramsRef = useRef(params);
   const [audioState, setAudioState] = useState<'init' | 'running' | 'suspended' | 'error' | 'closed'>('init');
+  const hasLoadedRef = useRef(false); // 用于追踪是否已完成首次渲染
 
   // --- 音频相关 Ref ---
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -559,6 +560,12 @@ const BodyOutlineFilter: React.FC = () => {
     };
 
     const onResults = (results: Results) => {
+      // 收到第一帧结果，关闭 Loading
+      if (!hasLoadedRef.current) {
+        hasLoadedRef.current = true;
+        setStatus("");
+      }
+
       const refs = threeRefs.current;
       if (!refs || !refs.maskCtx) return;
 
@@ -734,8 +741,8 @@ const BodyOutlineFilter: React.FC = () => {
              });
              faceMeshRef.current = faceMesh;
           }
-
-          setStatus(""); 
+          
+          setStatus("启动视觉引擎..."); 
           requestAnimationFrame(processFrame);
         } else {
           setTimeout(loadModel, 200);
@@ -792,7 +799,7 @@ const BodyOutlineFilter: React.FC = () => {
   return (
     <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
       {status && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 text-white transition-opacity duration-500">
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black text-white transition-opacity duration-500">
           {(!status.includes("错误") && !status.includes("Error") && !status.includes("Denied")) ? (
             <Loader2 className="w-12 h-12 mb-4 animate-spin text-cyan-400" />
           ) : (
