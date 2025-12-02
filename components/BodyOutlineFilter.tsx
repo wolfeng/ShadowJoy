@@ -391,6 +391,7 @@ const BodyOutlineFilter: React.FC = () => {
 
     let finalW, finalH;
 
+    // Calculate dimensions to cover the screen (object-cover behavior)
     if (screenRatio > videoRatio) {
       finalW = screenW;
       finalH = screenW / videoRatio;
@@ -399,11 +400,16 @@ const BodyOutlineFilter: React.FC = () => {
       finalW = screenH * videoRatio;
     }
 
+    // Apply specific dimensions and clear manual positions (relying on CSS transforms)
     videoRef.current.style.width = `${finalW}px`;
     videoRef.current.style.height = `${finalH}px`;
+    videoRef.current.style.left = '';
+    videoRef.current.style.top = '';
     
     canvasContainerRef.current.style.width = `${finalW}px`;
     canvasContainerRef.current.style.height = `${finalH}px`;
+    canvasContainerRef.current.style.left = '';
+    canvasContainerRef.current.style.top = '';
 
     if (threeRefs.current) {
       threeRefs.current.renderer.setSize(finalW, finalH);
@@ -841,20 +847,25 @@ const BodyOutlineFilter: React.FC = () => {
       </div>
 
       {/* 视频和 Three.js 画布 */}
-      <div className="relative w-full h-full flex justify-center items-center">
+      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
          {/* Video 直接显示，不隐藏，防黑屏 */}
         <video 
           ref={videoRef} 
-          className="absolute object-cover z-0 scale-x-[-1]" 
+          className="absolute z-0 left-1/2 top-1/2"
+          style={{ transform: 'translate(-50%, -50%) scaleX(-1) translateZ(0)' }} 
           playsInline 
           muted 
+          autoPlay
         />
         
         {/* Canvas 容器：层级最高，透明背景 */}
         <div 
             ref={canvasContainerRef} 
-            className="absolute z-10 pointer-events-none mix-blend-screen scale-x-[-1]" 
-            style={{ width: '100%', height: '100%' }}
+            className="absolute z-10 left-1/2 top-1/2" 
+            style={{ 
+              mixBlendMode: 'screen', 
+              transform: 'translate(-50%, -50%) scaleX(-1) translateZ(0)' 
+            }}
         />
       </div>
     </div>
