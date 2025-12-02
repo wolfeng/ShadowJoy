@@ -804,6 +804,13 @@ const BodyOutlineFilter: React.FC = () => {
 
   return (
     <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
+      {/* App Name Overlay */}
+      <div className="absolute top-6 left-6 z-40 pointer-events-none select-none">
+        <h1 className="text-white font-bold text-2xl tracking-wider drop-shadow-md flex items-baseline gap-2">
+          影乐 <span className="text-sm font-light text-white/70">ShadowJoy</span>
+        </h1>
+      </div>
+
       {status && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black text-white transition-opacity duration-500">
           {(!status.includes("错误") && !status.includes("Error") && !status.includes("Denied")) ? (
